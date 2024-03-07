@@ -1,18 +1,25 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <BomComponent style="display: none;" />
+    <SaleComponent />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import BomComponent from '../components/BomUpload.vue';
+import SaleComponent from '../components/SaleComponent.vue';
 export default {
-  name: 'HomeView',
   components: {
-    HelloWorld
+    BomComponent,
+    SaleComponent
+  },
+  methods: {
+    initialized: function() {
+      if(localStorage.getItem("initialized") == null) {
+        return false;
+      }
+      return true;
+    }
   }
 }
 </script>
