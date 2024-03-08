@@ -4,7 +4,7 @@
         <div class="card">
             <h4 style="text-align: center;">Enter Data<br>Here</h4>
             <input type="text" placeholder="Sale" id="sale" v-model="sale">
-            <button @click="get_consumption()">Submit</button>
+            <button @click="get_purchases()">Submit</button>
         </div>
         <table class="products">
             <tr>
@@ -31,6 +31,20 @@
                 <td>{{ item.consumption }}</td>
             </tr>
         </table>
+        <table class="products">
+            <tr>
+                <th>Item</th>
+                <th>Date</th>
+                <th>Qty.</th>
+            </tr>
+            <div v-for="item in pos" :key="item.id">
+                <tr class="product" v-for="it in item" :key="it.id">
+                    <td>{{ it.id }}</td>
+                    <td>{{ it.po.date.split('T')[0] }}</td>
+                    <td>{{ Math.round(it.po.qty) }}</td>
+                </tr>
+            </div>
+        </table>
     </div>
 
 </template>
@@ -38,7 +52,7 @@
 <style>
 .com {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-direction: column;
 }
@@ -103,6 +117,7 @@ export default {
             products: [],
             items: [],
             pRatio: [],
+            pos: [],
             sale: 0
         }
     },
@@ -162,6 +177,20 @@ export default {
                     console.log(this.pRatio);
                 }
             )
+        },
+
+        get_purchases: async function () {
+            let data = JSON.stringify(this.t());
+            await fetch('http://localhost:8653/api/input/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            }).then(res => res.json()).then(data => {
+                this.pos = data.data.pos;
+                console.log(this.pos);
+            })
         }
     },
 

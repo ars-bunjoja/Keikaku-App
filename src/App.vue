@@ -10,7 +10,7 @@
   font-family: 'Roboto', sans-serif;
 }
 body {
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 </style>
 
