@@ -7,13 +7,13 @@
         <div class="links">
             <a href="#" class="links">Home</a>
             <a href="#" class="links">About</a>
+            <input type="text" v-model="$store.state.apiURL" @change="$store.commit('setApiURL', $store.state.apiURL)">
         </div>
     </div>
 
 </template>
 
 <style scoped>
-
 .header {
     display: flex;
     justify-content: space-between;
@@ -21,9 +21,11 @@
     padding: 8px 12px;
     background-color: #242424;
 }
+
 .header .brand {
     color: #fff;
 }
+
 .header a {
     color: #42b983;
     text-decoration: none;
@@ -31,3 +33,9 @@
     margin: 0px 8px;
 }
 </style>
+
+<script>
+export default {
+    name: 'HeaderComponent'
+}
+</script>

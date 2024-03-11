@@ -31,19 +31,28 @@
                 <td>{{ item.consumption }}</td>
             </tr>
         </table>
-        <table class="products">
+        <table class="po_items" v-if="pos.length > 1">
             <tr>
-                <th>Item</th>
-                <th>Date</th>
-                <th>Qty.</th>
+                <div class="po_item">
+                    <th>Item</th>
+                    <th>PO Creation Date</th>
+                    <th>Qty.</th>
+                    <th>Lead Time</th>
+                    <th>Expected Delivery Date</th>
+                    <th>Forecasted Consumption</th>
+                </div>
             </tr>
-            <div v-for="item in pos" :key="item.id">
-                <tr class="product" v-for="it in item" :key="it.id">
-                    <td>{{ it.id }}</td>
+            <div v-for="item in pos" :key="item.id" class="po_item">
+                <tr v-for="it in item" :key="it.id">
+                    <td>{{ it.name }}</td>
                     <td>{{ it.po.date.split('T')[0] }}</td>
                     <td>{{ Math.round(it.po.qty) }}</td>
+                    <td>{{ it.po.leadTime }}</td>
+                    <td>{{ it.po.date_lead.split('T')[0] }}</td>
+                    <td>{{ Math.round(it.consumption) }}</td>
                 </tr>
             </div>
+
         </table>
     </div>
 
@@ -52,7 +61,7 @@
 <style>
 .com {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     flex-direction: column;
 }
@@ -93,19 +102,37 @@
     border: none;
 }
 
-.com .products {
+.com .products,
+.com .po_items {
     border-collapse: collapse;
     width: 300px;
 }
 
+.com .po_items {
+    width: 90%;
+}
+
 .com .products .product td,
-.com .products tr th {
+.com .products tr th,
+.com .po_items .po_item td,
+.com .po_items tr th {
     border: 1px solid #242424;
 }
 
 .com .products .product td,
-.com .products tr th {
+.com .products tr th,
+.com .po_items tr td,
+.com .po_items tr th {
     padding: 4px;
+}
+
+.com .po_items .po_item td {
+    width: 180px;
+    overflow: hidden;
+}
+.com .po_items th {
+    max-width: 15%;
+    min-width: 180px;
 }
 </style>
 
@@ -123,7 +150,8 @@ export default {
     },
     methods: {
         fetch_products: async function () {
-            await fetch('http://localhost:8653/api/products/').then(
+            console.log(this.$store.state.apiURL);
+            await fetch(`${this.$store.state.apiURL}/products/`).then(
                 res => res.json()
             ).then(
                 data => {
@@ -154,7 +182,7 @@ export default {
         get_consumption: async function () {
             this.items = [];
             let data = JSON.stringify(this.t());
-            await fetch('http://localhost:8653/api/consumption/', {
+            await fetch(`${this.$store.state.apiURL}/consumption/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -181,7 +209,7 @@ export default {
 
         get_purchases: async function () {
             let data = JSON.stringify(this.t());
-            await fetch('http://localhost:8653/api/input/', {
+            await fetch(`${this.$store.state.apiURL}/input/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -189,7 +217,6 @@ export default {
                 body: data
             }).then(res => res.json()).then(data => {
                 this.pos = data.data.pos;
-                console.log(this.pos);
             })
         }
     },

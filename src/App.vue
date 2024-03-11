@@ -1,5 +1,5 @@
 <template>
-  <HeaderComponent style="display: none;" />
+  <HeaderComponent v-if="showHeader" />
   <router-view/>
 </template>
 
@@ -19,6 +19,11 @@ import HeaderComponent from './components/HeaderComponent.vue';
 
 export default {
   name: 'App',
+  data() {
+    return {
+      showHeader: false
+    }
+  },
   components: {
     HeaderComponent
   }
